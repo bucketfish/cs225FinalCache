@@ -1,0 +1,60 @@
+
+#1
+build a set that contains all walk to a terminal
+a walk: a list of nodes that it passes
+use getFront and getBack on this list to know where it begins and how it ends (win/lose)
+then we search the set to calculate winning rate
+
+void findRoute (state s, list<state> l, set< list<state> > set) {
+    if (s.checkEndGame()) {
+        set.inset(l);
+        return;
+    } else {
+        for (state next : s.getNext()) {
+            if (next.getScore() == s.favor()) {   // id est, if the in-control player at s really would take this move
+                                                  // for example, if the maximizing player (who favors 1) is in control, he won't move to a next that has score -1.
+                                                  // we avoid calculating dumb moves by this
+                                                  // favor() is not really a function, it stands for a messy judging expression that i'm too lazy to think of
+                l.insert(next);
+                findRoute(next, l, s);
+            }
+        }
+    }
+}
+
+#2
+or, calculate directly the rate/possibility of winning
+ of a certain player in curr state s :
+
+double findWinRate (state s, player) {
+    if (s.endGame) {
+        if (player loses) return 0;
+        else return 1;
+    } else {
+        double tmp_rate = 0;
+        int count = 0;
+
+        for (state next : s.getNext()) {
+            if (next.getScore() == s.favor()) { //same as above, avoid calculating dumb moves
+                count ++;
+                tmp_rate += findWinRate(next, player);
+            }
+        }
+
+        return (tmp_rate / count);
+
+        // is this really the correct way to calculate the rate of winning ???
+        // for example if S has 3 available next states: A (10% chance winning), B (15%), C (5%)
+        // is the chance to win at S equal to 10% ??
+        // what if it's A (11%) B(15%) C(6%) ?? 
+
+        //NO!
+
+        //think of another proper expression but above is what i'd call the idea of it
+        //talk in the evening
+
+
+        //bucketfish 02/12 3pm
+
+    }
+}

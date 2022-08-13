@@ -1,0 +1,64 @@
+pseudocode to generate the graph
+
+generate(state start, graph g) {
+    queue q;
+    q.enque(start);
+
+    while (q !empty) {
+
+        state s = q.front; //处理队列里第一个状态s
+        
+        if (s !movePhase) {  //不是移子阶段 i.e.放子阶段
+            
+            int m;
+            if (s.blackNum < s.whiteNum) m = 1;
+            else m = 2;
+            //谁少放谁
+
+            for (position p : from (0,0) to (2,2)) { //棋盘上的每个位置
+                if (p empty) {          //如果是空的
+                    state next = s;     //就新建copy状态 (实际上大概该用指针)
+                    next.board.p = m;   //然后放子
+                    if (next !inG) {    //如果是新状态
+                        q.enque(next);      //就放进处理队列
+                        g->nodeList.add(next);  //然后加入node list
+                    }
+                    g->edgeList.add(move(s, next, m); //把这一步加入edge list --move(from, to, pieceType)
+                    
+                    if (m == 1) s.blackNext.add(next); //下的是什么棋就放进哪边的next里面
+                    if (m == 2) s.whiteNext.add(next);
+                }
+            }
+
+        } else { //是移子阶段
+
+            for (position p : from (0,0) to (2,2)) { //棋盘上的每个位置
+                if (p !empty) {     //如果不是空的
+                    int m = s.board.p;  //就记下是什么棋 准备移
+                    for (position p1 : around p && within (0,0) to (2,2)) { //p周围的每个合法位置
+                        if (p1 empty) { //如果是空的
+                            state next = s; //就新建copy状态 同上
+                            next.board.p = 0;   //然后移子
+                            next.board.p1 = m;
+                            if (next !inG) {    //是新状态
+                                q.enque(next);  //就放进处理队列
+                                g->nodeList.add(next);  //然后加入node list
+                            }
+                            g->edgeList.add(move(s, next, m));  //把这一步加入edge list
+
+                            if (m == 1) s.blackNextList.add(next); //移的是什么棋就放进哪边的next里面
+                            if (m == 2) s.whiteNextList.add(next);
+                    }
+                }
+
+                }
+
+            }
+        }
+
+        q.pop;  //处理完就pop
+
+    }
+
+    return g;
+}
